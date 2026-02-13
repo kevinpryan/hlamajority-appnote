@@ -1,0 +1,3 @@
+[submodule "external/mhc_genotyping"]
+	path = external/mhc_genotyping
+	url = https://github.com/kevinpryan/mhc_genotyping.git
