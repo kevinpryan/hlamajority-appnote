@@ -2,5 +2,5 @@
 	path = external/mhc_genotyping
 	url = https://github.com/kevinpryan/mhc_genotyping.git
 [submodule "external/nf-hlamajoirty"]
-	path = external/nf-hlamajoirty
+	path = external/nf-hlamajority
 	url = https://github.com/kevinpryan/nf-hlamajority.git
