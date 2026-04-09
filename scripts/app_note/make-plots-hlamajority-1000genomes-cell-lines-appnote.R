@@ -8,14 +8,16 @@ library(ggpubr)
 
 setwd("/hlamajority-paper/external/mhc_genotyping/")
 source("scripts/functions/evaluate_predictions_functions.R")
-all.in <- read.table("../../data/raw/1000-genomes/benchmark-1000genomes-nfhlamajority-local-update-db-exclude-trim-majority-all-samples/benchmark-1000genomes-nfhlamajority-all-20260309-majority-handle-error-kourami-hlala/combined_results/nf_hlamajority_all_calls_sorted.tsv", sep = "\t", header = T)
-results <- readRDS("../../data/processed/results/hlamajority/1000genomes-all-samples/1000-genomes-full-results-hlamajority-majority-vote.Rds")
+#all.in <- read.table("../../data/raw/1000-genomes/benchmark-1000genomes-nfhlamajority-local-update-db-exclude-trim-majority-all-samples/benchmark-1000genomes-nfhlamajority-all-20260309-majority-handle-error-kourami-hlala/combined_results/nf_hlamajority_all_calls_sorted.tsv", sep = "\t", header = T)
+#results <- readRDS("../../data/processed/results/hlamajority/1000genomes-all-samples/1000-genomes-full-results-hlamajority-majority-vote.Rds")
+all.in <- read.table("../../data/raw/1000-genomes/majority/all_samples/combined_results/nf_hlamajority_all_calls_sorted.tsv", sep = "\t", header = T)
+results <- readRDS("../../data/processed/1000-genomes/majority/1000-genomes-full-results-hlamajority-majority-vote.Rds")
 results$summary$Tool <- factor(
   results$summary$Tool,
   levels = c("kourami", "hlala", "polysolver", "optitype", "hlamajority"),
   labels = c("Kourami", "HLA*LA", "Polysolver", "Optitype", "nf-hlamajority")
 )
-df <- read.csv("../../data/processed/results/hlamajority/1000genomes-all-samples/1000-genomes-full-stats-hlamajority-majority-vote.csv")
+df <- read.csv("../../data/processed/1000-genomes/majority/1000-genomes-full-stats-hlamajority-majority-vote.csv")
 df <- df %>% dplyr::mutate(Accuracy = 100*Accuracy)
 df$Gene <- factor(df$Gene, levels = c("Overall", "A", "B", "C"))
 df$Tool <- factor(
@@ -147,13 +149,13 @@ compare_hlamajority_claeys_per_gene_per_tool <- ggplot(data_for_plotting, aes(x 
   )
 
 # make plot cell lines
-results <- readRDS("../../data/processed/results/hlamajority/cell-lines/nci-full-results-hlamajority-majority-vote.Rds")
+results <- readRDS("../../data/processed/cell-lines/majority/nci-full-results-hlamajority-majority-vote.Rds")
 results$summary$Tool <- factor(
   results$summary$Tool,
   levels = c("kourami", "hlala", "polysolver", "optitype", "hlamajority"),
   labels = c("Kourami", "HLA*LA", "Polysolver", "Optitype", "nf-hlamajority")
 )
-df <- read.csv("../../data/processed/results/hlamajority/cell-lines/nci-full-stats-hlamajority-majority-vote.csv")
+df <- read.csv("../../data/processed/cell-lines/majority/nci-full-stats-hlamajority-majority-vote.csv")
 df <- df %>% dplyr::mutate(Accuracy = 100*Accuracy)
 df$Gene <- factor(df$Gene, levels = c("Overall", "A", "B", "C"))
 df$Tool <- factor(
