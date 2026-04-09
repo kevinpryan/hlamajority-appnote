@@ -29,3 +29,11 @@ Generate figures
 ```
 bash make-app-note-figures.sh
 ```
+
+Run the Docker images containing all dependencies to run Rscripts as follows:
+
+```
+bash launch-container.sh
+```
+
+and go to `http://localhost:8787/` on any web browser to open Rstudio
