@@ -9,6 +9,8 @@ for f in bin_*; do
     shuf --random-source=<(yes 42) "$f" | head -n 4
 done > stratified_20_samples.txt
 
-awk '{print $2}' stratified_20_samples.txt > ../../data/processed/results/hlamajority/1000genomes-all-samples/selected_crams.txt
+mkdir -p ../../data/processed/1000-genomes/majority/subset_20/
+
+awk '{print $2}' stratified_20_samples.txt > ../../data/processed/1000-genomes/majority/subset_20/selected_crams.txt
 
 rm bin_* sizes_numeric_sorted.txt stratified_20_samples.txt

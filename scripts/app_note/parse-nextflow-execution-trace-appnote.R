@@ -5,7 +5,7 @@ library(readr)
 
 setwd("/hlamajority-paper/scripts/app_note/")
 # read in trace file for 20-sample cpu run
-dat <- read.table("../../data/raw/1000-genomes/benchmark-1000genomes-nfhlamajority-majority-20-samples-cpu-run-v4/benchmark-1000genomes-nfhlamajority-majority-20-samples-cpu-run-v4/pipeline_info/execution_trace_2026-04-01_13-07-30.txt", sep = "\t", header = T) %>% dplyr::filter(status != "FAILED")
+dat <- read.table("../../data/raw/1000-genomes/majority/subset_20/pipeline_info/execution_trace_2026-04-01_13-07-30.txt", sep = "\t", header = T) %>% dplyr::filter(status != "FAILED")
 
 # Function to parse Nextflow's time format (e.g., '1h 25m 30.1s') into total hours
 parse_nf_time_to_hours <- function(time_str) {
@@ -52,7 +52,6 @@ cpu_hours_per_sample <- dat_for_summary %>%
   group_by(sampleid) %>%
   summarise(total_actual_cpu_hours = sum(actual_cpu_hours))
 
-mean(cpu_hours_per_sample$total_actual_cpu_hours)
 # Calculate the new mean
 mean_cpu_hours <- mean(cpu_hours_per_sample$total_actual_cpu_hours)
 print(paste("Average CPU hours per sample:", mean_cpu_hours))
@@ -65,6 +64,7 @@ cram.sizes <- read.table("../../data/raw/1000-genomes/filesizes-1000genomes-cram
   )
 cpu_hours_per_sample_with_size <- left_join(cpu_hours_per_sample, cram.sizes, by = "sampleid")
 correlation_test <- cor.test(cpu_hours_per_sample_with_size$total_actual_cpu_hours, cpu_hours_per_sample_with_size$cram_size_gb)
+print("no correlation between CPU hours and CRAM size...")
 print(correlation_test)
 #Pearson's product-moment correlation
 
@@ -95,11 +95,14 @@ mean_proportion_per_process <- proportion_cpu_hours_per_process %>%
   summarise(Mean_Proportion_CPU_Hours = mean(prop)) %>%
   arrange(desc(Mean_Proportion_CPU_Hours))
 
+print("mean proportion of CPU hours consumed by each process...")
 print(mean_proportion_per_process)
+print("CPU hours consumed by BAM_TO_FASTQ processes...")
+
 mean_proportion_per_process %>% dplyr::filter(grepl("BAM_TO_FASTQ", name_clean)) %>% summarise(bam_to_fastq_proportion_cpu_hours = sum(Mean_Proportion_CPU_Hours)) %>% pull()
 # [1] 0.310869
 # full 1000 genomes run for full information
-dat <- read.table("../../data/raw/1000-genomes/benchmark-1000genomes-nfhlamajority-local-update-db-exclude-trim-majority-all-samples/benchmark-1000genomes-nfhlamajority-all-20260309-majority-handle-error-kourami-hlala/pipeline_info/execution_trace_2026-03-09_11-40-44.txt", sep = "\t", header = T) %>% dplyr::filter(status != "FAILED")
+dat <- read.table("../../data/raw/1000-genomes/majority/all_samples/pipeline_info/execution_trace_2026-03-09_11-40-44.txt", sep = "\t", header = T) %>% dplyr::filter(status != "FAILED")
 dat <- dat %>% mutate(name_clean = str_split_fixed(name, pattern = " \\(", n = 2)[,1],
                       sampleid = str_split_fixed(name, pattern = "\\(", n = 2)[,2]) %>% 
                mutate(sampleid = gsub(")", "", sampleid))
@@ -155,7 +158,7 @@ summary_table <- dat_for_summary %>%
   arrange(desc(Max_Peak_RSS))
 
 # repeat for reference building
-dat <- read.table("../../data/raw/build-references/reference_build_logs_20260401/reference_build_logs/pipeline_info/execution_trace_2026-04-01_10-32-16.txt", sep = "\t", header = T) %>% dplyr::filter(status != "FAILED")
+dat <- read.table("../../data/raw/references/build_logs/pipeline_info/execution_trace_2026-04-01_10-32-16.txt", sep = "\t", header = T) %>% dplyr::filter(status != "FAILED")
 dat <- dat %>% mutate(name_clean = str_split_fixed(name, pattern = " \\(", n = 2)[,1])
 dat_for_summary <- dat %>%
   mutate(
@@ -168,16 +171,22 @@ dat_for_summary <- dat %>%
     actual_cpu_hours = realtime_hours * (cpu_percent / 100)
   ) %>% 
   arrange(desc(actual_cpu_hours))
-
-#sum(dat_for_summary$actual_cpu_hours)
+print("total CPU hours consumed by reference building workflow...")
+print(sum(dat_for_summary$actual_cpu_hours))
 #[1] 4.653669
 proportion_cpu_hours_per_process <- dat_for_summary %>% 
           mutate(proportion_cpu_hours = actual_cpu_hours / sum(actual_cpu_hours)) 
 
 proportion_cpu_hours_per_process_bwa_index <- proportion_cpu_hours_per_process %>% dplyr::filter(grepl("BWA_INDEX", name)) %>% summarise(bwa_index_cpu_hours = sum(proportion_cpu_hours)) %>% pull()
-# [1] 2.691942
+print("proporion of cpu hours consumed by BWA Indexing processes...")
+print(proportion_cpu_hours_per_process_bwa_index)
+# [1] 0.5784558
 head(dat_for_summary, n = 1)
 #   task_id      hash native_id                                name    status exit                  submit   duration   realtime X.cpu peak_rss peak_vmem   rchar   wchar name_clean sampleid realtime_hours cpu_percent actual_cpu_hours
 
 #1       1 d2/237dc4  11059789 REFERENCES:HLA_LA_REFERENCE_PREPARE COMPLETED    0 2026-04-01 10:32:20.790 1h 45m 57s 1h 45m 42s 96.4%  33.4 GB   34.1 GB 20.4 GB 37.5 GB REFERENCES:HLA_LA_REFERENCE_PREPARE                1.761667        96.4         1.698247
+
+proportion_cpu_hours_hla_references <- proportion_cpu_hours_per_process %>% dplyr::filter(name_clean == "REFERENCES:HLA_LA_REFERENCE_PREPARE") %>% dplyr::select(proportion_cpu_hours) %>% pull()
+print("proportion of cpu hours consumed by HLA_LA_REFERENCE_PREPARE processes...")
+print(proportion_cpu_hours_hla_references)
 
