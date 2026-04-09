@@ -8,7 +8,7 @@ split -n l/5 sizes_numeric_sorted.txt bin_
 for f in bin_*; do
     shuf --random-source=<(yes 42) "$f" | head -n 4
 done > stratified_20_samples.txt
-
+pwd
 mkdir -p ../../data/processed/1000-genomes/majority/subset_20/
 
 awk '{print $2}' stratified_20_samples.txt > ../../data/processed/1000-genomes/majority/subset_20/selected_crams.txt

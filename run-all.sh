@@ -7,6 +7,7 @@ set -e
 # command to put before Rscripts to make sure we use the docker container
 docker_prefix="docker run --rm -v $(pwd):/hlamajority-paper/ -w /hlamajority-paper/ kevinr9525/rocker-bioconductor:hlamajority-appnote"
 echo "Running all scripts in the correct order to reproduce the results in the paper..."
+mkdir -p data/processed/1000-genomes/majority/
 # downloading the gold standard data for the 1000 genomes samples
 echo "Running script 1: download_gourraud.sh"
 bash external/mhc_genotyping/scripts/downloads/1kg/gold_standard/download_gourraud.sh
