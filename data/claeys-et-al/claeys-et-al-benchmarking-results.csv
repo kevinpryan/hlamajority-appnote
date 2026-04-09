@@ -1,0 +1,7 @@
+Feature,A,B,C,DQA1,DQB1,DRB1
+best_wes,98,97.6,98.4,99.3,93.2,98.2
+meta_wes,98.8,99.1,99.2,100,96.3,99.2
+best_rna,99.6,99.1,99.6,100,99.1,99.2
+meta_rna,99.7,98.8,99.5,100,99.3,99.4
+best_tool_wes,optitype,optitype,optitype,HLA-HD_PHLAT,HLA-LA,HLA-HD
+best_tool_rna,arcasHLA,arcasHLA,arcasHLA,arcasHLA_HLA-HD_PHLAT,HLA-HD,HLA-HD
