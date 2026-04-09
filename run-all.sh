@@ -13,6 +13,9 @@ bash external/mhc_genotyping/scripts/downloads/1kg/gold_standard/download_gourra
 ### run script to combine Gourraud and DeBakker gold standard data
 echo "Running script 2: combine_1kg_gold_standard.R"
 $docker_prefix Rscript external/mhc_genotyping/scripts/combine_1kg_gold_standard.R
+echo "running script to create group mapping for 1000 Genomes samples: create_ggroup_mapping.R"
+mkdir -p external/mhc_genotyping/data/
+$docker_prefix Rscript external/mhc_genotyping/scripts/create_ggroup_mapping.R
 echo "Running script 3: process_goldstandard_1kg.R"
 $docker_prefix Rscript external/mhc_genotyping/scripts/process_goldstandard_1kg.R
 echo "Running script 4: evaluate_predictions_1000genomes_all_samples.R"
@@ -25,7 +28,7 @@ bash external/mhc_genotyping/scripts/downloads/adams_2005/download.sh
 echo "Running script 7 for parsing Adams 2005 data: download_parse_tables.R"
 $docker_prefix Rscript external/mhc_genotyping/scripts/downloads/adams_2005/download_parse_tables.R
 echo "Running script 8 for creating sample names NCI-60 data: create_sample_names_nci60.R"
-Rscript external/mhc_genotyping/scripts/create_sample_names_nci60.R
+$docker_prefix Rscript external/mhc_genotyping/scripts/create_sample_names_nci60.R
 echo "Running script 9 for processing gold standard NCI-60 data: process_goldstandard_nci60.R"
 $docker_prefix Rscript external/mhc_genotyping/scripts/process_goldstandard_nci60.R
 echo "Running script 10 for evaluating predictions on NCI-60 data: evaluate_predictions_nci60_20260225.R"
@@ -37,4 +40,4 @@ cd scripts/app_note/
 bash select-crams-for-cpu-analysis.sh
 cd ../..
 echo "Running script 13 for parsing Nextflow execution trace"
-$docker_prefix Rscript parse-nextflow-execution-trace-appnote.R
+$docker_prefix Rscript scripts/app_note/parse-nextflow-execution-trace-appnote.R
