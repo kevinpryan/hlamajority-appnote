@@ -1,5 +1,9 @@
 # HLA Majority App Note
 
+## nf-hlamajority: An Automated Nextflow Pipeline for Consensus HLA Genotyping in Neoantigen Prediction Workflows
+
+Code to generate figures from application note for [nf-hlamajority](https://github.com/kevinpryan/nf-hlamajority/tree/main)
+
 TODO: upload outputs of nf-hlamajority to Zenodo and add scripts to download them
 
 To regenerate the figures:
@@ -37,3 +41,5 @@ bash launch-container.sh
 ```
 
 and go to `http://localhost:8787/` on any web browser to open Rstudio
+
+
