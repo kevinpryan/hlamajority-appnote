@@ -59,6 +59,24 @@ echo "Running script 10 for evaluating predictions on NCI-60 data: evaluate_pred
 $docker_prefix Rscript external/mhc_genotyping/scripts/evaluate_predictions_nci60_20260225.R
 fi
 
+#if [ ! -f data/processed/cell-lines-v2/majority/nci-full-stats-hlamajority-majority-vote.csv ]; then
+#echo "Running script  for evaluating predictions on NCI-60 data: evaluate_predictions_nci60_20260428.R"
+#mkdir -p data/processed/cell-lines-v2/majority/
+#$docker_prefix Rscript external/mhc_genotyping/scripts/evaluate_predictions_nci60_20260428.R
+#fi
+
+if [ ! -f data/processed/cell-lines-before-polysolver-change/majority/nci-full-stats-hlamajority-majority-vote.csv ]; then
+echo "Running script  for evaluating predictions on NCI-60 data: evaluate_predictions_nci60_before_polysolver_change_20260429.R"
+mkdir -p data/processed/cell-lines-before-polysolver-change/majority/
+$docker_prefix Rscript external/mhc_genotyping/scripts/evaluate_predictions_nci60_before_polysolver_change_20260429.R
+fi
+
+if [ ! -f data/processed/cell-lines-after-polysolver-change/majority/nci-full-stats-hlamajority-majority-vote.csv ]; then
+echo "Running script  for evaluating predictions on NCI-60 data: evaluate_predictions_nci60_after_polysolver_change_20260429.R"
+mkdir -p data/processed/cell-lines-after-polysolver-change/majority/
+$docker_prefix Rscript external/mhc_genotyping/scripts/evaluate_predictions_nci60_after_polysolver_change_20260429.R
+fi
+
 echo "Running script 11 for calculating mean file size of 1000 Genomes CRAMs"
 $docker_prefix Rscript scripts/app_note/get-average-filesize-crams.R
 echo "Running script 12 for selecting CRAMs for CPU analysis"
@@ -66,6 +84,6 @@ cd scripts/app_note/
 bash select-crams-for-cpu-analysis.sh
 cd ../..
 echo "Running script 13 for parsing Nextflow execution trace"
-$docker_prefix Rscript scripts/app_note/parse-nextflow-execution-trace-appnote.R
-
+#$docker_prefix Rscript scripts/app_note/parse-nextflow-execution-trace-appnote.R
+$docker_prefix Rscript scripts/app_note/parse-nextflow-execution-trace-appnote-20260429.R
 
