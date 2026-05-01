@@ -10,6 +10,8 @@ docker_prefix="docker run --rm -v $(pwd):/hlamajority-paper/ -w /hlamajority-pap
 if [ ! -d data/raw/cell-lines-after-polysolver-change/ ]; then
 echo "Directory data/raw/cell-lines-after-polysolver-change/ does not exist. Running download-data.sh to download the necessary data..."
 bash download-data.sh
+else 
+echo "Directory data/raw/cell-lines-after-polysolver-change/ exists. Assuming the necessary data is already downloaded."
 fi
 echo "Running all scripts in the correct order to reproduce the results in the paper..."
 mkdir -p data/processed/1000-genomes/majority/
@@ -60,7 +62,7 @@ $docker_prefix Rscript external/mhc_genotyping/scripts/process_goldstandard_nci6
 fi
 
 #if [ ! -f data/processed/cell-lines/majority/nci-full-stats-hlamajority-majority-vote.csv ]; then
-#echo "Running script 10 for evaluating predictions on NCI-60 data: evaluate_predictions_nci60_20260225.R"
+#echo "Running script 10 for evaluating original predictions on NCI-60 data: evaluate_predictions_nci60_20260225.R"
 #$docker_prefix Rscript external/mhc_genotyping/scripts/evaluate_predictions_nci60_20260225.R
 #fi
 

@@ -211,94 +211,8 @@ figureD <- ggplot(df.for.figureD, aes(x = Tool, y = Accuracy, fill = Tool)) +
     axis.text.y = element_text(colour = "black"),
     panel.spacing = unit(0.8, "lines")
   )
-  # theme(
-  #   #axis.text.x = element_text(angle = 45, hjust = 1), # Rotate x labels
-  #   strip.background = element_rect(fill = "#f0f0f0"), # Facet header background
-  #   strip.text = element_text(face = "bold", size = 18),
-  #   panel.grid.major.x = element_blank(),
-  #   legend.position = "none", # Hide legend since x-axis has labels
-  #   axis.title = element_text(size = 18), 
-  #   axis.text = element_text(size = 16), 
-  #   axis.text.x = element_text(angle = 45, hjust = 1, colour = "black"),
-  #   axis.text.y = element_text(colour = "black")
-  # )
+
 figureD
-# make plot cell lines BEFORE polysolver alignment change
-results <- readRDS("../../data/processed/cell-lines/majority/nci-full-results-hlamajority-majority-vote.Rds")
-results$summary$Tool <- factor(
-  results$summary$Tool,
-  levels = c("kourami", "hlala", "polysolver", "optitype", "hlamajority"),
-  labels = c("Kourami", "HLA*LA", "Polysolver", "Optitype", "nf-hlamajority")
-)
-
-df <- read.csv("../../data/processed/cell-lines-before-polysolver-change/majority/nci-full-stats-hlamajority-majority-vote.csv")
-df <- df %>% dplyr::mutate(Accuracy = 100*Accuracy)
-df$Gene <- factor(df$Gene, levels = c("Overall", "A", "B", "C"))
-df$Tool <- factor(
-  df$Tool,
-  levels = c("kourami", "hlala", "polysolver", "optitype", "hlamajority"),
-  labels = c("Kourami", "HLA*LA", "Polysolver", "Optitype", "nf-hlamajority")
-)
-
-my_gene_labels <- c(
-  "Overall" = "Overall Accuracy",
-  "A"     = "HLA-A",
-  "B"     = "HLA-B",
-  "C"     = "HLA-C"
-) 
-
-cell.line.performance.before.polysolver.change <- ggplot(df, aes(x = Tool, y = Accuracy, fill = Tool)) +
-  
-  # Create bars
-  geom_col(position = position_dodge(), width = 0.7, color = "black", size = 0.2) +
-  
-  # Facet by Gene
-  facet_wrap(~Gene, scales = "fixed", 
-             ncol = 2,
-             labeller = as_labeller(my_gene_labels)
-  ) +
-  
-  # Add text labels on top of bars (rounded to 1 decimal)
-  geom_text(
-    aes(label = paste(round(Accuracy, 1), "%", sep = "")),
-    position = position_dodge(width = 0.9), 
-    vjust = -0.3, 
-    size = 5) +
-  
-  # Colours: Highlight nf-hlamajority
-  scale_fill_manual(values = c("#999999", "#999999", "#999999", "#999999", "#E69F00")) +
-  
-  # Scales
-  #scale_y_continuous(limits = c(0, 111), breaks = seq(0, 100, 25), expand = c(0,0)) +
-  scale_y_continuous(limits = c(0, 120), breaks = seq(0, 100, 25), expand = c(0,0)) +
-  
-  # Labels
-  labs(
-    y = "Accuracy (%)",
-    x = "Tool",
-    fill = "Tool") +
-  
-  # Theme customization
-  theme_bw() +
-  coord_cartesian(ylim = c(0, 111)) +     # Set the visible limits here
-  theme(
-    strip.background = element_rect(fill = "#f0f0f0"), # Facet header background
-    strip.text = element_text(face = "bold", size = 16),
-    panel.grid.major.x = element_blank(),
-    legend.position = "none", # Hide legend since x-axis has labels
-    axis.title = element_text(size = 20, face = "bold"), 
-    axis.text = element_text(size = 18), 
-    axis.text.x = element_text(angle = 45, hjust = 1, colour = "black", size = 16),
-    axis.text.y = element_text(colour = "black"),
-    panel.spacing = unit(0.8, "lines")
-  )
-cell.line.performance.before.polysolver.change
-
-# nci_1000genomes_combined <- ggarrange(compare_hlamajority_claeys_per_gene_per_tool, p, ncol = 2, nrow = 1, widths = c(3,2))
-# nci_1000genomes_combined2 <- ggarrange(figureD, figureE, ncol = 2, nrow = 1)
-# 
-# ggsave(plot = nci_1000genomes_combined, filename = "/hlamajority-paper/results/app_note/plots/hlamajority-1000genomes-nci-combined.svg", width = 20, height = 7)
-# ggsave(plot = nci_1000genomes_combined2, filename = "/hlamajority-paper/results/app_note/plots/hlamajority-1000genomes-nci-combined-20260428.svg", width = 20, height = 7)
 
 # make plot cell lines AFTER polysolver alignment change
 results <- readRDS("../../data/processed/cell-lines-after-polysolver-change/majority/nci-full-results-hlamajority-majority-vote.Rds")
@@ -336,11 +250,6 @@ cell.line.performance.after.polysolver.change <- ggplot(df, aes(x = Tool, y = Ac
   ) +
   
   # Add text labels on top of bars (rounded to 1 decimal)
-  # geom_text(
-  #   aes(label = paste(round(Accuracy, 1), "%", sep = "")),
-  #   position = position_dodge(width = 0.9), 
-  #   vjust = -0.3, 
-  #   size = 5) +
   geom_text( 
     aes(label = paste(round(Accuracy, 1), "%", sep = "")),
     position = position_dodge(width = 0.9), 
@@ -374,12 +283,12 @@ cell.line.performance.after.polysolver.change <- ggplot(df, aes(x = Tool, y = Ac
     panel.spacing = unit(0.8, "lines")
   )
 cell.line.performance.after.polysolver.change
-cell.line.before.after.combined <- ggarrange(cell.line.performance.before.polysolver.change, cell.line.performance.after.polysolver.change, 
-                                             ncol = 2, 
-                                             labels = c("Before", "After"),
-                                             hjust = -0.1,
-                                             font.label = list(size = 18, color = "blue"))
-cell.line.before.after.combined
+#cell.line.before.after.combined <- ggarrange(cell.line.performance.before.polysolver.change, cell.line.performance.after.polysolver.change, 
+#                                             ncol = 2, 
+#                                             labels = c("Before", "After"),
+#                                             hjust = -0.1,
+#                                             font.label = list(size = 18, color = "blue"))
+#cell.line.before.after.combined
 
 
 figureD_figureE <- ggarrange(
