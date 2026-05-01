@@ -2,6 +2,8 @@
 
 ## nf-hlamajority: An Automated Nextflow Pipeline for Consensus HLA Genotyping in Neoantigen Prediction Workflows
 
+[![DOI](https://zenodo.org/badge/1157271477.svg)](https://doi.org/10.5281/zenodo.19952935)
+
 Code to generate figures from application note for [nf-hlamajority](https://github.com/kevinpryan/nf-hlamajority/tree/main)
 
 Upload outputs of nf-hlamajority to Zenodo and add scripts to download them
