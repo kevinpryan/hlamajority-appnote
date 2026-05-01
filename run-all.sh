@@ -3,9 +3,14 @@ set -e
 # this is a master script for reproducing the results in the paper. It will run all the scripts in the correct order.
 # requirements:
 # output of nf-hlamajority: data/raw/1000-genomes/benchmark-1000genomes-nfhlamajority-local-update-db-exclude-trim-majority-all-samples/ and data/raw/cell-lines/benchmark-cell-lines-all-kourami-3-63-0-majority-vote/ 
-# dependencies: docker, bash
+# dependencies: docker, bash, md5sum
 # command to put before Rscripts to make sure we use the docker container
 docker_prefix="docker run --rm -v $(pwd):/hlamajority-paper/ -w /hlamajority-paper/ kevinr9525/rocker-bioconductor:hlamajority-appnote"
+# check if the directory data/raw/cell-lines-after-polysolver-change/ exists, if not, chances are the user did not run download-data.sh, so we will run it here 
+if [ ! -d data/raw/cell-lines-after-polysolver-change/ ]; then
+echo "Directory data/raw/cell-lines-after-polysolver-change/ does not exist. Running download-data.sh to download the necessary data..."
+bash download-data.sh
+fi
 echo "Running all scripts in the correct order to reproduce the results in the paper..."
 mkdir -p data/processed/1000-genomes/majority/
 # downloading the gold standard data for the 1000 genomes samples
@@ -54,9 +59,27 @@ echo "Running script 9 for processing gold standard NCI-60 data: process_goldsta
 $docker_prefix Rscript external/mhc_genotyping/scripts/process_goldstandard_nci60.R
 fi
 
-if [ ! -f data/processed/cell-lines/majority/nci-full-stats-hlamajority-majority-vote.csv ]; then
-echo "Running script 10 for evaluating predictions on NCI-60 data: evaluate_predictions_nci60_20260225.R"
-$docker_prefix Rscript external/mhc_genotyping/scripts/evaluate_predictions_nci60_20260225.R
+#if [ ! -f data/processed/cell-lines/majority/nci-full-stats-hlamajority-majority-vote.csv ]; then
+#echo "Running script 10 for evaluating predictions on NCI-60 data: evaluate_predictions_nci60_20260225.R"
+#$docker_prefix Rscript external/mhc_genotyping/scripts/evaluate_predictions_nci60_20260225.R
+#fi
+
+#if [ ! -f data/processed/cell-lines-v2/majority/nci-full-stats-hlamajority-majority-vote.csv ]; then
+#echo "Running script  for evaluating predictions on NCI-60 data: evaluate_predictions_nci60_20260428.R"
+#mkdir -p data/processed/cell-lines-v2/majority/
+#$docker_prefix Rscript external/mhc_genotyping/scripts/evaluate_predictions_nci60_20260428.R
+#fi
+
+if [ ! -f data/processed/cell-lines-before-polysolver-change/majority/nci-full-stats-hlamajority-majority-vote.csv ]; then
+echo "Running script  for evaluating predictions on NCI-60 data: evaluate_predictions_nci60_before_polysolver_change_20260429.R"
+mkdir -p data/processed/cell-lines-before-polysolver-change/majority/
+$docker_prefix Rscript external/mhc_genotyping/scripts/evaluate_predictions_nci60_before_polysolver_change_20260429.R
+fi
+
+if [ ! -f data/processed/cell-lines-after-polysolver-change/majority/nci-full-stats-hlamajority-majority-vote.csv ]; then
+echo "Running script  for evaluating predictions on NCI-60 data: evaluate_predictions_nci60_after_polysolver_change_20260429.R"
+mkdir -p data/processed/cell-lines-after-polysolver-change/majority/
+$docker_prefix Rscript external/mhc_genotyping/scripts/evaluate_predictions_nci60_after_polysolver_change_20260429.R
 fi
 
 echo "Running script 11 for calculating mean file size of 1000 Genomes CRAMs"
@@ -66,6 +89,6 @@ cd scripts/app_note/
 bash select-crams-for-cpu-analysis.sh
 cd ../..
 echo "Running script 13 for parsing Nextflow execution trace"
-$docker_prefix Rscript scripts/app_note/parse-nextflow-execution-trace-appnote.R
-
+#$docker_prefix Rscript scripts/app_note/parse-nextflow-execution-trace-appnote.R
+$docker_prefix Rscript scripts/app_note/parse-nextflow-execution-trace-appnote-20260429.R
 
