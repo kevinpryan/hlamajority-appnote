@@ -28,7 +28,8 @@ data.table \
 tibble \
 box \
 svglite \
-fuzzyjoin
+fuzzyjoin \
+rjson
 
 RUN sudo apt-get update -y && sudo apt-get install -y --no-install-recommends \
     libglpk-dev \

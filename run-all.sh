@@ -94,3 +94,9 @@ echo "Running script 13 for parsing Nextflow execution trace"
 #$docker_prefix Rscript scripts/app_note/parse-nextflow-execution-trace-appnote.R
 $docker_prefix Rscript scripts/app_note/parse-nextflow-execution-trace-appnote-20260429.R
 
+mkdir -p data/processed/cell-lines-after-polysolver-change/lens-majority-benchmark/combined-results/
+if [ ! -f data/processed/cell-lines-after-polysolver-change/lens-majority-benchmark/combined-results/lens-v1.2-dev-v1.8-results-standardised.csv ]; then
+echo "Running script for aggregating LENS results"
+$docker_prefix Rscript external/mhc_genotyping/scripts/aggregate_results_nci60_lens.R
+fi
+

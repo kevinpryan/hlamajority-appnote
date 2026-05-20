@@ -1,0 +1,2 @@
+/data2/kryan/raft_instance_20250409/projects/cell-lines-1.8-lens/outputs/samples/cell-lines-lens-v1.8
+/data2/kryan/raft_instance_20250409/projects/cell-lines-1.2-dev-lens/outputs/samples/test-cell-lines-v1.2-dev
