@@ -5,7 +5,7 @@ set -e
 # output of nf-hlamajority: data/raw/1000-genomes/benchmark-1000genomes-nfhlamajority-local-update-db-exclude-trim-majority-all-samples/ and data/raw/cell-lines/benchmark-cell-lines-all-kourami-3-63-0-majority-vote/ 
 # dependencies: docker, bash, md5sum
 # command to put before Rscripts to make sure we use the docker container
-docker_prefix="docker run --rm -v $(pwd):/hlamajority-paper/ -w /hlamajority-paper/ kevinr9525/rocker-bioconductor:hlamajority-appnote"
+docker_prefix="docker run --rm   -u $(id -u):$(id -g) -v $(pwd):/hlamajority-paper/ -w /hlamajority-paper/ kevinr9525/rocker-bioconductor:hlamajority-appnote"
 # check if the directory data/raw/cell-lines-after-polysolver-change/ exists, if not, chances are the user did not run download-data.sh, so we will run it here 
 if [ ! -d data/raw/cell-lines-after-polysolver-change/ ]; then
 echo "Directory data/raw/cell-lines-after-polysolver-change/ does not exist. Running download-data.sh to download the necessary data..."

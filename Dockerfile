@@ -29,7 +29,9 @@ tibble \
 box \
 svglite \
 fuzzyjoin \
-rjson
+rjson \
+ggrastr \
+tidytext
 
 RUN sudo apt-get update -y && sudo apt-get install -y --no-install-recommends \
     libglpk-dev \

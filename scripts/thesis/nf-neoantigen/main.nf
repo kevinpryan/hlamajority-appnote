@@ -90,12 +90,12 @@ process COMBINE_RESULTS {
     output:
     //path "${scenario.Sample}_${scenario.HLA_Gene}_${gene}_${mutation}_results_joined.csv"
     path "${sample}_${mutation_gene}_${mutation}_results_joined.csv"
-    path "${sample}_${mutation_gene}_${mutation}_results_summary.csv", emit: summary
+    path "${sample}_${mutation_gene}_${mutation}_results_decision.csv", emit: decision
     path "${sample}_${mutation_gene}_${mutation}_results_stats_all.csv", emit: stats
     shell:
     '''
 
-    parse-outputs-netmhcpan.R \\
+    parse-outputs-netmhcpan-test-debug.R \\
         "!{sample}" \\
         "!{mutation_gene}" \\
         "!{mutation}" \\
@@ -233,7 +233,7 @@ workflow {
     
     COMBINE_RESULTS(ch_for_combine, scenarios_file)
    
-    COMBINE_RESULTS.out.summary.collectFile(name: 'summaries_combined.csv', keepHeader: true, skip: 1)
+    COMBINE_RESULTS.out.decision.collectFile(name: 'decisions_combined.csv', keepHeader: true, skip: 1)
                                .set{ ch_summary_combined }
 
     COMBINE_RESULTS.out.stats.collectFile(name: 'stats_combined.csv', keepHeader: true, skip: 1)
