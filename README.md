@@ -8,12 +8,12 @@ Code to generate figures from application note for [nf-hlamajority](https://gith
 
 Upload outputs of nf-hlamajority to Zenodo and add scripts to download them
 
-To regenerate the figures:
+To regenerate the figures from the submitted version of the paper (submitted 01/06/2026):
 
-Clone the repository
+Clone the repository specifying the branch
 
 ```
-git clone --recurse-submodules https://github.com/kevinpryan/hlamajority-appnote.git
+git clone --recurse-submodules --branch v1.0.0 https://github.com/kevinpryan/hlamajority-appnote.git
 ```
 
 Run `run-all.sh` to download the nf-hlamajority output data from Zenodo (2.2 GB) and run the downstream processing requried to generate figures
