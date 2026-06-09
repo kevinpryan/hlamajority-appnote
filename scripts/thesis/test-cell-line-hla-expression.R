@@ -1,0 +1,6 @@
+BiocManager::install("rcellminer")
+library(rcellminer)
+molData <- getMolDataMatrices()
+gene <- c("HLA-A", "HLA-B", "HLA-C")
+plots <- c("exp", "exp", "exp") 
+plotCellMiner(molData = molData, plots = plots, gene = gene)

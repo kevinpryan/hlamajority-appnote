@@ -106,7 +106,7 @@ figure <- ggplot(df.for.figure, aes(x = Tool_ordered, y = Accuracy)) +
     legend.position = "right",
     legend.title = element_text(size = 18, face = "bold"),
     legend.text = element_text(size = 16)
-    ) +
+  ) +
   scale_fill_manual(
     name = "Input type",
     values = c(
@@ -271,7 +271,7 @@ heatmap <- ggplot(concordance_clean, aes(Tool2, Tool1, fill = Concordance)) +
   geom_text(aes(label = round(Concordance, 2)), size = 3) +
   facet_wrap(~Gene,
              labeller = as_labeller(my_gene_labels_remove_total)
-             ) +
+  ) +
   scale_fill_gradient2(
     low = "blue", high = "red",
     limit = c(0,1),
@@ -334,7 +334,7 @@ per_tool_concordance_weighted <- concordance_df_clean_for_weighted %>%
   )
 tool_labels_levels <- data.frame(Tool = tool_labels, levels = tool_levels)
 per_tool_concordance_weighted_levels <- left_join(per_tool_concordance_weighted, tool_labels_levels)
- 
+
 # add accuracy
 accuracy_df <- results$summary %>%
   dplyr::select(Gene, Tool, Accuracy) %>%
@@ -351,12 +351,12 @@ accuracy_df <- results$summary %>%
 by <- join_by(Tool == levels, Gene)
 
 per_tool_concordance_weighted_levels <- per_tool_concordance_weighted_levels %>%
-                                        dplyr::left_join(accuracy_df, by = by) %>%
-                                        mutate(Mean_Concordance = 100*Mean_Concordance)
+  dplyr::left_join(accuracy_df, by = by) %>%
+  mutate(Mean_Concordance = 100*Mean_Concordance)
 # default is pearson correlation
 per_tool_concordance_weighted_levels_cor <- per_tool_concordance_weighted_levels %>% 
-                                            group_by(Gene) %>% 
-                                            summarise(cor = cor(Accuracy, Mean_Concordance, use = "complete.obs"))
+  group_by(Gene) %>% 
+  summarise(cor = cor(Accuracy, Mean_Concordance, use = "complete.obs"))
 
 cor_labels <- per_tool_concordance_weighted_levels_cor %>%
   mutate(
@@ -368,11 +368,11 @@ gene_labels <- per_tool_concordance_weighted_levels_cor %>%
   deframe()  
 
 weighted_concordance_per_tool_plot <- ggplot(per_tool_concordance_weighted,
-       aes(x = reorder_within(Tool, Mean_Concordance, Gene), 
-           y = 100*Mean_Concordance)) +
-       # aes(x = reorder(Tool, Mean_Concordance),
-       #     y = Mean_Concordance)) +
-         scale_x_reordered() +
+                                             aes(x = reorder_within(Tool, Mean_Concordance, Gene), 
+                                                 y = 100*Mean_Concordance)) +
+  # aes(x = reorder(Tool, Mean_Concordance),
+  #     y = Mean_Concordance)) +
+  scale_x_reordered() +
   geom_col(fill = "steelblue") +
   coord_flip() +
   facet_wrap(~Gene, 
@@ -420,7 +420,7 @@ accuracy_vs_concordance <- ggplot(per_tool_concordance_weighted_levels, aes(x = 
   geom_point(size = 3, alpha = 0.8) +
   facet_wrap(~Gene, labeller = as_labeller(gene_labels)) +
   geom_smooth(method = "lm", se = FALSE, color = "black", linewidth = 0.5) +
-
+  
   labs(
     y = "Mean Concordance (%)",
     x = "Accuracy (%)"
@@ -493,12 +493,12 @@ df_results_combined_clean <- df_results_combined %>%
   dplyr::filter(Tool != "Optitype-DNA-LENS") %>% 
   mutate(Tool = gsub("Optitype-DNA-hlamajority", "Optitype-DNA", Tool)) %>% 
   mutate(
-  Tool = gsub("hlala", "HLA*LA", Tool),
-  Tool = gsub("kourami", "Kourami", Tool),
-  Tool = gsub("^hlamajority", "nf-hlamajority", Tool),
-  Tool = gsub("optitype", "Optitype-DNA", Tool),
-  Tool = gsub("polysolver", "Polysolver", Tool)
-) 
+    Tool = gsub("hlala", "HLA*LA", Tool),
+    Tool = gsub("kourami", "Kourami", Tool),
+    Tool = gsub("^hlamajority", "nf-hlamajority", Tool),
+    Tool = gsub("optitype", "Optitype-DNA", Tool),
+    Tool = gsub("polysolver", "Polysolver", Tool)
+  ) 
 
 df_results_combined_clean_ordered <- df_results_combined_clean %>%
   mutate(Tool_ordered2 = reorder_within(Tool, Call_Rate, dataset))
@@ -561,8 +561,8 @@ ggsave(p_call_combined, filename = "/hlamajority-paper/results/thesis/plots/call
 ggsave(p_call_combined, filename = "/hlamajority-paper/results/thesis/figures/call-rates-20260526.pdf", width = 15, height = 10)
 
 # plot false positives false negatives
-stats <- read.csv("../../scripts/thesis/nf-neoantigen/results-benchmark-remove-duplicate-q61h-20260603/combined/combined_stats_out.csv")
-summaries <- read.csv("../../scripts/thesis/nf-neoantigen/results-benchmark-remove-duplicate-q61h-20260603/combined/summaries_combined_out.csv")
+stats <- read.csv("../../scripts/thesis/nf-neoantigen/results/combined/combined_stats_out.csv")
+summaries <- read.csv("../../scripts/thesis/nf-neoantigen/results/combined/summaries_combined_out.csv")
 summaries_binder_loss <- summaries %>% dplyr::filter(binder_loss == TRUE)
 
 plot_df <- stats %>%
@@ -607,7 +607,7 @@ plot_df_per_gene <- stats %>%
 plot_df_per_gene$event <- factor(
   plot_df_per_gene$event,
   levels = c("binder_loss", "binder_gain", "strong_binder_loss", "strong_binder_gain"),
-  labels = c("Binder loss", "Binder gain", "Strong binder loss", "Strong binder gain")
+  labels = c("Binder loss", "Binder gain", "Strong\nbinder loss", "Strong\nbinder gain")
 )
 
 plot_df_per_gene$HLA_gene <- factor(
@@ -618,25 +618,18 @@ plot_df_per_gene$HLA_gene <- factor(
 
 plot_df_per_gene$Tool <- factor(
   plot_df_per_gene$Tool,
-  levels = c("LENS-v1.8-consensus", "hlamajority"),
-  labels = c("LENS-v1.8-consensus", "nf-hlamajority")
+  levels = c("LENS-v1.8-consensus", "hlamajority", "Optitype_ar"),
+  labels = c("LENS-v1.8-consensus", "nf-hlamajority", "Optitype-RNA")
 )
 
-plot_df_per_gene_strong <- plot_df_per_gene %>% dplyr::filter(event %in% c("Strong binder gain", "Strong binder loss"))
+plot_df_per_gene_strong <- plot_df_per_gene %>% dplyr::filter(event %in% c("Strong\nbinder gain", "Strong\nbinder loss"))
 plot_df_per_gene_weak <- plot_df_per_gene %>% dplyr::filter(event %in% c("Binder gain", "Binder loss"))
-
-# palette_mistake_types_neoant <- c(
-#   "Binder gain" = "#016FB9",
-#   "Binder loss" = "#22AED1",
-#   "Strong binder gain" = "#6D8EA0",
-#   "Strong binder loss" = "#AFA98D"
-# )
 
 palette_mistake_types_neoant <- c(
   "Binder gain" = "#016FB9",
   "Binder loss" = "#758E4F",
-  "Strong binder gain" = "#016FB9",
-  "Strong binder loss" = "#758E4F"
+  "Strong\nbinder gain" = "#016FB9",
+  "Strong\nbinder loss" = "#758E4F"
 )
 number_of_errors_weak_per_gene <- ggplot(
   plot_df_per_gene_weak,
@@ -666,7 +659,7 @@ number_of_errors_weak_per_gene <- ggplot(
   theme_bw() +
   theme(
     strip.background = element_rect(fill = "#f0f0f0"),
-    strip.text = element_text(face = "bold", size = 18),
+    strip.text = element_text(face = "bold", size = 14),
     panel.grid.major.x = element_blank(),
     axis.text = element_text(colour = "black", size = 14),
     axis.title = element_text(size = 18),
@@ -706,7 +699,7 @@ number_of_errors_strong_per_gene <- ggplot(
   theme_bw() +
   theme(
     strip.background = element_rect(fill = "#f0f0f0"),
-    strip.text = element_text(face = "bold", size = 18),
+    strip.text = element_text(face = "bold", size = 14),
     panel.grid.major.x = element_blank(),
     axis.text = element_text(colour = "black", size = 14),
     axis.title = element_text(size = 18),
@@ -719,20 +712,21 @@ number_of_errors_strong_per_gene <- ggplot(
   scale_fill_manual(values = palette_mistake_types_neoant)
 number_of_errors_strong_per_gene
 plot_df_per_gene_weak_summary <- plot_df_per_gene_weak %>% 
-                                 dplyr::filter(Strong_weak == "Weak") %>% 
-                                 group_by(Tool) %>% 
-                                 summarise(n_error = sum(count))
+  dplyr::filter(Strong_weak == "Weak") %>% 
+  group_by(Tool) %>% 
+  summarise(n_error = sum(count))
 
 plot_df_per_gene_weak_summary
 
 palette_lens_hlamajority <- c(
   "nf-hlamajority" = "#DB5461",
-  "LENS-v1.8-consensus" = "#08415C"
+  "LENS-v1.8-consensus" = "#08415C",
+  "Optitype-RNA" = "#561643"
 )
 
 plot_df_per_gene_weak_summary$Tool <- factor(plot_df_per_gene_weak_summary$Tool,
-                                   levels = c("LENS-v1.8-consensus", "nf-hlamajority")
-                                   #labels = c("Dropout", "Allele Gain", "Partial Mismatch", "Complete Mismatch")
+                                             levels = c("LENS-v1.8-consensus", "nf-hlamajority", "Optitype-RNA")
+                                             #labels = c("Dropout", "Allele Gain", "Partial Mismatch", "Complete Mismatch")
 )
 
 n_errors_weak <- ggplot(
@@ -813,7 +807,7 @@ summarise_gene_tool <- function(results, gene, tool) {
     row.names = NULL
   )
 }
-tools <-  c("hlamajority", "LENS-v1.8-consensus")
+tools <-  c("hlamajority", "LENS-v1.8-consensus", "Optitype_ar")
 genes <- c("A", "B", "C")
 final_df <- do.call(
   rbind,
@@ -841,8 +835,8 @@ final_df_mismatches$Type <- factor(final_df_mismatches$Type,
 )
 
 final_df_mismatches$Tool <- factor(final_df_mismatches$Tool,
-                                   levels = c("LENS-v1.8-consensus", "hlamajority"),
-                                   labels = c("LENS-v1.8-consensus", "nf-hlamajority")
+                                   levels = c("LENS-v1.8-consensus", "hlamajority", "Optitype_ar"),
+                                   labels = c("LENS-v1.8-consensus", "nf-hlamajority", "Optitype-RNA")
 )
 
 palette_mistake_types <- c(
@@ -955,6 +949,10 @@ summaries_binder_gain_hlamajority <- summaries %>% dplyr::filter(Tool == "hlamaj
 samples_binder_gain_hlamajority <- length(unique(summaries_binder_gain_hlamajority$Sample))
 summaries_binder_loss_hlamajority <- summaries %>% dplyr::filter(Tool == "hlamajority" & binder_loss == TRUE)
 samples_binder_loss_hlamajority <- length(unique(summaries_binder_loss_hlamajority$Sample))
+summaries_binder_gain_optitype_rna <- summaries %>% dplyr::filter(Tool == "Optitype_ar" & binder_gain == TRUE)
+samples_binder_gain_optitype_rna <- length(unique(summaries_binder_gain_optitype_rna$Sample))
+summaries_binder_loss_optitype_rna <- summaries %>% dplyr::filter(Tool == "Optitype_ar" & binder_loss == TRUE)
+samples_binder_loss_optitype_rna <- length(unique(summaries_binder_loss_optitype_rna$Sample))
 
 summarise_sample_level <- summaries %>% group_by(Tool) %>%
   summarise(
@@ -971,11 +969,11 @@ summarise_sample_level <- summaries %>% group_by(Tool) %>%
       n_distinct(Sample[strong_binder_gain])
   )
 summarise_sample_level_long <- summarise_sample_level %>% 
-pivot_longer(
-  cols = -Tool,
-  names_to = "metric",
-  values_to = "n_samples"
-)
+  pivot_longer(
+    cols = -Tool,
+    names_to = "metric",
+    values_to = "n_samples"
+  )
 
 p_samples <- ggplot(
   summarise_sample_level_long,
@@ -1020,9 +1018,9 @@ p_samples <- ggplot(
     panel.spacing.y = unit(1.2, "lines")#,
     #plot.title = element_text(color="black", size=28, face="bold.italic")
   ) #+
-  # coord_cartesian(ylim = c(0, 10)) +
-  #scale_fill_manual(values = palette_mistake_types) +
-  #ggtitle("Number of samples affected")
+# coord_cartesian(ylim = c(0, 10)) +
+#scale_fill_manual(values = palette_mistake_types) +
+#ggtitle("Number of samples affected")
 
 plot_df <- summarise_sample_level %>%
   pivot_longer(
@@ -1041,13 +1039,13 @@ plot_df <- summarise_sample_level %>%
   )
 plot_df$Tool <- factor(
   plot_df$Tool,
-  levels = c("LENS-v1.8-consensus", "hlamajority"),
-  labels = c("LENS-v1.8-consensus", "nf-hlamajority")
+  levels = c("LENS-v1.8-consensus", "hlamajority", "Optitype_ar"),
+  labels = c("LENS-v1.8-consensus", "nf-hlamajority", "Optitype-RNA")
 )
 plot_df$metric <- factor(
   plot_df$metric,
   levels = c("binder_loss", "binder_gain", "strong_binder_loss", "strong_binder_gain"),
-  labels = c("Binder loss", "Binder gain", "Strong binder loss", "Strong binder gain")
+  labels = c("Weak binder loss", "Weak binder gain", "Strong binder loss", "Strong binder gain")
 )
 plot_number_of_samples <- ggplot(
   plot_df,
@@ -1077,25 +1075,6 @@ plot_number_of_samples <- ggplot(
     breaks = seq(0, 10, by = 2),
     expand = c(0, 0)  
   ) 
-# combine.neoantigen.prediction.errors <- ggarrange(
-#   ggarrange(n_errors_weak, n_errors_strong, 
-#             ncol = 2, 
-#             labels = c("A", "B"),
-#             font.label=list(color="black",size=26, face = "bold")
-#             ),
-#   ggarrange(number_of_errors_weak_per_gene, 
-#             number_of_errors_strong_per_gene, 
-#             ncol = 2,
-#             labels = c("C", "D"),
-#             font.label=list(color="black",size=26, face = "bold")
-#             ),
-#   plot_number_of_samples,
-#   p_types_counts,
-#   nrow = 4,
-#   heights = c(1, 2, 2, 2),
-#   labels = c("", "", "E", "F"),
-#   font.label=list(color="black",size=26, face = "bold")
-# )
 
 combine.neoantigen.prediction.errors <- ggarrange(
   p_types_counts,
@@ -1123,5 +1102,7 @@ combine.neoantigen.prediction.errors <- ggarrange(
 # ggsave(plot = combine.neoantigen.prediction.errors, filename = "/hlamajority-paper/results/thesis/figures/neoantigen-prediction-errors-20260528.pdf", width = 16, height = 20)
 ggsave(plot = combine.neoantigen.prediction.errors, filename = "/hlamajority-paper/results/thesis/plots/neoantigen-prediction-errors-update-20260602.svg", width = 16, height = 20)
 ggsave(plot = combine.neoantigen.prediction.errors, filename = "/hlamajority-paper/results/thesis/plots/neoantigen-prediction-errors-20260602.pdf", width = 16, height = 20)
-ggsave(plot = combine.neoantigen.prediction.errors, filename = "/hlamajority-paper/results/thesis/figures/neoantigen-prediction-errors-20260602.pdf", width = 16, height = 20)
+ggsave(plot = combine.neoantigen.prediction.errors, filename = "/hlamajority-paper/results/thesis/figures/neoantigen-prediction-errors-add-optitype-rna-20260604.pdf", width = 16, height = 20)
 
+
+combine.neoantigen.prediction.errors

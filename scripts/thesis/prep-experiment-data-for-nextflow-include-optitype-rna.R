@@ -23,6 +23,7 @@ make_scenarios <- function(df, gene, tool_name) {
     dplyr::select(Sample, Gene, Tool, HLA_true, HLA_mistyped)
 }
 
+# HLAmajority
 df_A <- results$details$A$hlamajority$metrics$gold_standard_vs_tool_incorrect_calls
 df_B <- results$details$B$hlamajority$metrics$gold_standard_vs_tool_incorrect_calls
 df_C <- results$details$C$hlamajority$metrics$gold_standard_vs_tool_incorrect_calls
@@ -33,6 +34,7 @@ scenarios_C <- make_scenarios(df_C, "C", "hlamajority")
 scenarios <- rbind(scenarios_A, scenarios_B, scenarios_C)
 colnames(scenarios)[2] <- "HLA_Gene"
 
+# LENS
 df_LENS_A <- results$details$A$`LENS-v1.8-consensus`$metrics$gold_standard_vs_tool_incorrect_calls
 df_LENS_B <- results$details$B$`LENS-v1.8-consensus`$metrics$gold_standard_vs_tool_incorrect_calls
 df_LENS_C <- results$details$C$`LENS-v1.8-consensus`$metrics$gold_standard_vs_tool_incorrect_calls
@@ -43,10 +45,21 @@ scenarios_C_LENS <- make_scenarios(df_LENS_C, "C", "LENS-v1.8-consensus")
 scenarios_LENS <- rbind(scenarios_A_LENS, scenarios_B_LENS, scenarios_C_LENS)
 colnames(scenarios_LENS)[2] <- "HLA_Gene"
 
-scenarios <- rbind(scenarios, scenarios_LENS)
+# Optitype-RNA
+df_Optitype_RNA_A <- results$details$A$Optitype_ar$metrics$gold_standard_vs_tool_incorrect_calls
+df_Optitype_RNA_B <- results$details$B$Optitype_ar$metrics$gold_standard_vs_tool_incorrect_calls
+df_Optitype_RNA_C <- results$details$C$Optitype_ar$metrics$gold_standard_vs_tool_incorrect_calls
+
+scenarios_A_Optitype_RNA <- make_scenarios(df_Optitype_RNA_A, "A", "Optitype_ar")
+scenarios_B_Optitype_RNA <- make_scenarios(df_Optitype_RNA_B, "B", "Optitype_ar")
+scenarios_C_Optitype_RNA <- make_scenarios(df_Optitype_RNA_C, "C", "Optitype_ar")
+scenarios_Optitype_RNA <- rbind(scenarios_A_Optitype_RNA, scenarios_B_Optitype_RNA, scenarios_C_Optitype_RNA)
+colnames(scenarios_Optitype_RNA)[2] <- "HLA_Gene"
+
+scenarios <- rbind(scenarios, scenarios_LENS, scenarios_Optitype_RNA)
 scenarios$Sample <- gsub(pattern = "/", replacement = "-", x = scenarios$Sample)
 scenarios$Sample <- gsub(pattern = " ", replacement = "-", x = scenarios$Sample)
-write.table(scenarios, file = "../../data/processed/neoantigen-prediction/scenarios.txt", quote = F, row.names = F, sep = "\t")
+write.table(scenarios, file = "../../data/processed/neoantigen-prediction/scenarios-include-optitype-rna.txt", quote = F, row.names = F, sep = "\t")
 get_protein_sequence <- function(gene, organism = "human") {
   
   base_url <- "https://rest.uniprot.org/uniprotkb/search"
@@ -174,16 +187,16 @@ generate_neoantigens <- function(gene, mutation) {
 mutation.df <- data.frame(
   gene = "KRAS",
   mutation = c(
-               "G12A",
-               "G12C",
-               "G12D",
-               "G12R",
-               "G12S",
-               "G12V",
-               "G13D",
-               "G13R",
-               "Q61H"
-               )
+    "G12A",
+    "G12C",
+    "G12D",
+    "G12R",
+    "G12S",
+    "G12V",
+    "G13D",
+    "G13R",
+    "Q61H"
+  )
 )
 mutation.df.nras <- data.frame(
   gene = "NRAS",

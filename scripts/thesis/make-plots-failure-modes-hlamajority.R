@@ -5,7 +5,7 @@ library(vroom)
 library(forcats)
 library(tidyr)
 library(ggpubr)
-install.packages("tidytext")
+#install.packages("tidytext")
 library(tidytext)
 library(tibble)
 setwd("/hlamajority-paper/external/mhc_genotyping/")
@@ -39,6 +39,8 @@ my_gene_labels <- c(
 
 summarise_gene_tool <- function(results, gene, tool) {
   
+  tool <- as.character(tool)
+  
   x <- results$details[[gene]][[tool]]$error_types$Type
   
   tab <- table(x)
@@ -52,13 +54,23 @@ summarise_gene_tool <- function(results, gene, tool) {
   )
 }
 tools <- unique(df$Tool)
+tools_internal <- c("kourami", "hlala", "polysolver", "optitype", "hlamajority")
+
+tools_labels <- c(
+  kourami = "Kourami",
+  hlala = "HLA*LA",
+  polysolver = "Polysolver",
+  optitype = "Optitype",
+  hlamajority = "nf-hlamajority"
+)
+
 genes <- c("A", "B", "C")
 final_df <- do.call(
   rbind,
   lapply(genes, function(g) {
     do.call(
       rbind,
-      lapply(tools, function(t) {
+      lapply(tools_internal, function(t) {
         summarise_gene_tool(results, g, t)
       })
     )
@@ -77,6 +89,13 @@ final_df_mismatches$Type <- factor(final_df_mismatches$Type,
                                    levels = c("Dropout (Hetero -> Homo)", "Hallucination (Homo -> Hetero)", "Partial Mismatch", "Complete Mismatch"),
                                    labels = c("Dropout", "Allele Gain", "Partial Mismatch", "Complete Mismatch")
 )
+
+final_df_mismatches$Tool <- factor(
+  final_df_mismatches$Tool,
+  levels = c("kourami", "hlala", "polysolver", "optitype", "hlamajority"),
+  labels = c("Kourami", "HLA*LA", "Polysolver", "Optitype", "nf-hlamajority")
+)
+
 
 palette_mistake_types <- c(
   Correct = "#016FB9",
@@ -205,7 +224,7 @@ final_df_1000_genomes <- do.call(
   lapply(genes, function(g) {
     do.call(
       rbind,
-      lapply(tools, function(t) {
+      lapply(tools_internal, function(t) {
         summarise_gene_tool(results_1000_genomes, g, t)
       })
     )
@@ -225,7 +244,11 @@ final_df_mismatches_1000_genomes$Type <- factor(final_df_mismatches_1000_genomes
                                    labels = c("Dropout", "Allele Gain", "Partial Mismatch", "Complete Mismatch")
 )
 
-final_df_mismatches_1000_genomes
+final_df_mismatches_1000_genomes$Tool <- factor(
+  final_df_mismatches_1000_genomes$Tool,
+  levels = c("kourami", "hlala", "polysolver", "optitype", "hlamajority"),
+  labels = c("Kourami", "HLA*LA", "Polysolver", "Optitype", "nf-hlamajority")
+)
 
 p_types_percent_1000_genomes <- ggplot(
   final_df_mismatches_1000_genomes,
