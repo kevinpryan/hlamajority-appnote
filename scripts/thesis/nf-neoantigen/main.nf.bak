@@ -1,0 +1,150 @@
+// take in ch_mutations and generate the mutated sequences for each mutation
+process GENERATE_MUTATIONS{
+
+  label 'rstudio_container'
+
+  input:
+  tuple val(gene), val(mutation)
+
+  output:
+  tuple val(gene), val(mutation), path("*_peptides.txt"), emit:mutated_sequences
+
+  script:
+  """
+  generate-peptides.R test_sample $gene $mutation ${gene}_${mutation}_peptides.txt
+  """
+}
+
+process RUN_NETMHCPAN {
+
+  label 'netmhcpan_container'  // your Docker image
+
+  input:
+  tuple val(gene), val(mutation), path(pep_file), val(scenario)
+
+  output:
+  tuple val(gene), val(mutation), val(scenario), path("*.out")
+  script:
+  def sample        = scenario.Sample
+  def hla_true      = scenario.HLA_true
+  def hla_mistyped  = scenario.HLA_mistyped
+  def tool = scenario.Tool
+
+  """
+  # split WT and MUT peptides
+  cut -f4 ${pep_file} | tail -n +2 | sort | uniq > wt_peptides.txt
+  cut -f5 ${pep_file} | tail -n +2 | sort | uniq > mut_peptides.txt
+
+  # run TRUE HLA
+  /netMHCpan-4.1/Linux_x86_64/bin/netMHCpan -p wt_peptides.txt \
+            -a ${hla_true} \
+            -BA \
+            -s \
+            -t -99 > ${sample}_${gene}_${mutation}_${tool}_WT_TRUE.out
+  # add header to TRUE WT output
+  echo "TYPE=WT_TRUE SAMPLE=${sample} GENE=${gene} MUT=${mutation} TOOL=${tool}" > header.txt
+  cat header.txt >> ${sample}_${gene}_${mutation}_${tool}_WT_TRUE.out
+
+  /netMHCpan-4.1/Linux_x86_64/bin/netMHCpan -p mut_peptides.txt \
+            -a ${hla_true} \
+            -BA \
+            -s \
+            -t -99 > ${sample}_${gene}_${mutation}_${tool}_MUT_TRUE.out
+  # add header to TRUE MUT output
+  echo "TYPE=MUT_TRUE SAMPLE=${sample} GENE=${gene} MUT=${mutation} TOOL=${tool}" > header.txt
+  cat header.txt >> ${sample}_${gene}_${mutation}_${tool}_MUT_TRUE.out
+
+  # run MISTYPED HLA
+  /netMHCpan-4.1/Linux_x86_64/bin/netMHCpan -p wt_peptides.txt \
+            -a ${hla_mistyped} \
+            -BA \
+            -s \
+            -t -99 > ${sample}_${gene}_${mutation}_${tool}_WT_MIS.out
+   # add header to MISTYPED WT output
+   echo "TYPE=WT_MIS SAMPLE=${sample} GENE=${gene} MUT=${mutation} TOOL=${tool}" > header.txt
+   cat header.txt >> ${sample}_${gene}_${mutation}_${tool}_WT_MIS.out
+
+   /netMHCpan-4.1/Linux_x86_64/bin/netMHCpan -p mut_peptides.txt \
+            -a ${hla_mistyped} \
+            -BA \
+            -s \
+            -t -99 > ${sample}_${gene}_${mutation}_${tool}_MUT_MIS.out
+  # add header to MISTYPED MUT output
+  echo "TYPE=MUT_MIS SAMPLE=${sample} GENE=${gene} MUT=${mutation} TOOL=${tool}" > header.txt
+  cat header.txt >> ${sample}_${gene}_${mutation}_${tool}_MUT_MIS.out
+  """
+}
+
+process COMBINE_RESULTS {
+  label 'rstudio_container'
+
+  input:
+  tuple val(gene), val(mutation), val(meta), path(files), path(peptides)
+  path scenarios
+
+  output:
+  path "${sample}_${gene}_${mutation}_combined.tsv"
+
+  script:
+  def sample   = meta.Sample
+  def hla_gene = meta.HLA_Gene
+  """
+  parse-outputs-netmhcpan.R ${sample} \
+                            ${hla_gene} \
+                            ${gene} \
+                            ${mutation} \
+                            ${files.join(' ')} \
+                            ${scenarios} \
+                            ${peptides}
+  """
+}
+
+workflow {
+   Channel
+       .fromPath("../../../data/processed/neoantigen-prediction/mutations.csv")
+       .splitCsv(header:true)
+       .set{ ch_mutations }
+  //.view()
+
+Channel
+  .fromPath("../../../data/processed/neoantigen-prediction/scenarios.txt")
+  .splitCsv(header:true, sep:"\t")
+  .set{ ch_scenarios }
+//ch_scenarios.view()
+  GENERATE_MUTATIONS(ch_mutations)
+  peptides_ch = GENERATE_MUTATIONS.out.mutated_sequences
+  peptides_ch.view()
+  peptides_ch
+      .combine(ch_scenarios)
+      .set { combined_input }
+  //combined_input.view()
+  RUN_NETMHCPAN(combined_input)
+  RUN_NETMHCPAN.out.view()
+  netmhcpan_results = RUN_NETMHCPAN.out
+    .map { gene, mutation, meta, file ->
+        tuple(meta.Sample, gene, mutation, meta, file)
+    }
+    peptides_k = peptides_ch
+    .map { gene, mutation, file ->
+        tuple(gene, mutation, file)
+    }
+
+    combined_input = netmhcpan_results
+    .map { sample, gene, mutation, file ->
+        tuple(gene, mutation, sample, file)
+    }
+    .join(
+        peptides_k.map { gene, mutation, file ->
+            tuple(gene, mutation, file)
+        }
+    )
+
+  combined_input.view()
+   /*
+  COMBINE_RESULTS(
+      combined_input,
+      file("../../../data/processed/neoantigen-prediction/scenarios.txt"),
+      //file("../../../data/processed/neoantigen-prediction/mutations.csv")
+  )
+  */
+}

@@ -159,18 +159,13 @@ workflow {
     // --- 1. Create initial channels ---
 
     // Channel of mutations: [ gene, mutation ]
+//         .fromPath("../../../data/processed/neoantigen-prediction/mutations.csv")
     ch_mutations = Channel
-        .fromPath("../../../data/processed/neoantigen-prediction/mutations.csv")
+        .fromPath("../../../data/processed/neoantigen-prediction/mutations-without-nras-q61h.csv")
         .splitCsv(header:true)
         .map { row -> tuple(row.gene, row.mutation) }
-     /*
-    ch_scenarios = Channel
-        .fromPath("../../../data/processed/neoantigen-prediction/scenarios.txt")
-        .splitCsv(header:true, sep:"\t")
-        .map { row -> row } // Creates a channel of maps
-     */
     Channel
-        .fromPath("../../../data/processed/neoantigen-prediction/scenarios.txt")
+        .fromPath("../../../data/processed/neoantigen-prediction/scenarios-include-optitype-rna.txt")
         .splitCsv(header:true, sep:"\t")
         .set{ ch_scenarios }
     ch_scenarios.view()
@@ -228,7 +223,7 @@ workflow {
     .set { ch_for_combine }
  
     // We also need to pass the original scenarios.txt file as a static value input
-    scenarios_file = file("../../../data/processed/neoantigen-prediction/scenarios.txt")
+    scenarios_file = file("../../../data/processed/neoantigen-prediction/scenarios-include-optitype-rna.txt")
     ch_for_combine.view() 
     
     COMBINE_RESULTS(ch_for_combine, scenarios_file)

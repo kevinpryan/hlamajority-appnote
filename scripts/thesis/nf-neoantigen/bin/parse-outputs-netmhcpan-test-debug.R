@@ -106,6 +106,10 @@ check_counts <- function(paired, scenario_row, n_windows = 38) {
   
   expected <- expected_counts(scenario_row, n_windows)
   observed <- paired %>% count(HLA, name = "observed_n")
+  print("expected...")
+  print(head(expected))
+  print("observed...")
+  print(head(observed))
   check <- expected %>%
     left_join(observed, by = "HLA") %>%
     mutate(
