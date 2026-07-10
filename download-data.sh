@@ -31,6 +31,7 @@ else
 fi
 
 tar -xvf data/raw/hlamajority-appnote-data-raw.tar.gz -C data/raw/
+rm -f data/raw/1000-genomes
 mv data/raw/raw/* data/raw/
 # remove the downloaded tar.gz file and the empty raw directory
 rm data/raw/hlamajority-appnote-data-raw.tar.gz 
