@@ -8,7 +8,6 @@ if [ -f data/raw/hlamajority-appnote-data-raw.tar.gz ]; then
             echo "Data has been extracted, skipping data extraction"
 	    exit 0
         else
-            rm -f data/raw/1000-genomes
             tar -xvf data/raw/hlamajority-appnote-data-raw.tar.gz -C data/raw/
             mv data/raw/raw/* data/raw/
             # remove the downloaded tar.gz file and the empty raw directory
