@@ -2,3 +2,4 @@ docker_prefix="docker run --rm -v $(pwd):/hlamajority-paper/ -w /hlamajority-pap
 #$docker_prefix Rscript scripts/app_note/make-plots-hlamajority-1000genomes-appnote.R
 #$docker_prefix Rscript scripts/app_note/make-plots-nci60-hlamajority-appnote.R
 $docker_prefix Rscript scripts/app_note/make-plots-hlamajority-1000genomes-cell-lines-appnote.R
+$docker_prefix Rscript scripts/app_note/make-plots-hlamajority-wgs-appnote.R
