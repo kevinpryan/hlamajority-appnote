@@ -101,5 +101,5 @@ samplesheet_failed_samples_annot$pass_fail_wes <- "FAIL"
 samplesheet_failed_samples
 samplesheet_combined <- rbind.data.frame(selected_100_samplesheet, samplesheet_failed_samples)
 samplesheet_combined_annot <- rbind.data.frame(selected_100_samplesheet_annot, samplesheet_failed_samples_annot)
-write.csv(samplesheet_combined, "../../data/samplesheet-152-wgs-samples.csv", quote = F, row.names = F)
-write.csv(samplesheet_combined_annot, "../../data/samplesheet-152-wgs-samples-pass-fail.csv", quote = F, row.names = F)
+write.csv(samplesheet_combined, "../../data/samplesheet-149-wgs-samples.csv", quote = F, row.names = F)
+write.csv(samplesheet_combined_annot, "../../data/samplesheet-149-wgs-samples-pass-fail.csv", quote = F, row.names = F)

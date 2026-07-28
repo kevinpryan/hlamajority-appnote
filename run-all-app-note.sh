@@ -135,6 +135,6 @@ $docker_prefix Rscript scripts/app_note/identify-failed-samples-wes-decide-wgs-s
 
 echo "running script for evaluating WGS benchmark results: evaluate_predictions_1000genomes_wgs.R"
 mkdir -p  data/processed/1000-genomes/wgs-30x-149samples-majority/
-$docker_prefix Rscript scripts/app_note/evaluate_predictions_1000genomes_wgs.R
+$docker_prefix Rscript external/mhc_genotyping/scripts/evaluate_predictions_1000genomes_wgs.R
 
 

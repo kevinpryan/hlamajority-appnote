@@ -11,7 +11,8 @@ if [ -f data/raw/hlamajority-appnote-data-raw.tar.gz ]; then
             tar -xvf data/raw/hlamajority-appnote-data-raw.tar.gz -C data/raw/
             mv data/raw/raw/* data/raw/
             # remove the downloaded tar.gz file and the empty raw directory
-            rm data/raw/hlamajority-appnote-data-raw.tar.gz data/raw/raw
+            rm data/raw/hlamajority-appnote-data-raw.tar.gz 
+            rmdir data/raw/raw
             exit 0
         fi
     else
@@ -24,8 +25,11 @@ else
     echo "Checking integrity of the downloaded file..."
     if echo "bff5f67e5f535e892dec74846f392e03  data/raw/hlamajority-appnote-data-raw.tar.gz" | md5sum -c -; then
         echo "File is valid."
+        tar -xvf data/raw/hlamajority-appnote-data-raw.tar.gz -C data/raw/
+        mv data/raw/raw/* data/raw/
         # remove the downloaded tar.gz file and the empty raw directory
-        rm data/raw/hlamajority-appnote-data-raw.tar.gz data/raw/raw
+        rm data/raw/hlamajority-appnote-data-raw.tar.gz 
+        rmdir data/raw/raw
     else
         echo "File is corrupted. Please try downloading again."
         exit 1
