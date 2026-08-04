@@ -147,7 +147,7 @@ if [ ! -f data/processed/cell-lines-after-polysolver-change/lens-majority-benchm
     $docker_prefix Rscript external/mhc_genotyping/scripts/aggregate_results_nci60_lens.R
 fi
 
-if [ ! f data/processed/cell-lines-after-polysolver-change/lens-majority-benchmark/nci-full-stats-lens-compare-hlamajority.csv ]; then
+if [ ! -f data/processed/cell-lines-after-polysolver-change/lens-majority-benchmark/nci-full-stats-lens-compare-hlamajority.csv ]; then
     echo "running script for evaluating LENS results on NCI-60 cell lines: evaluate_predictions_nci60_lens.R"
     $docker_prefix Rscript external/mhc_genotyping/scripts/evaluate_predictions_nci60_lens.R
 fi
@@ -199,7 +199,7 @@ echo "running script for making app note plots: make-plots-hlamajority-1000genom
 $docker_prefix Rscript scripts/app_note/make-plots-hlamajority-1000genomes-cell-lines-appnote.R
 fi
 
-if [ ! -f results/app_note_plots/hlamajority-1000genomes-wgs.svg ]; then
+if [ ! -f results/app_note/plots/hlamajority-1000genomes-wgs.svg ]; then
 echo "running script for making app note supplementary plot: make-plots-hlamajority-wgs-appnote.R"
 $docker_prefix Rscript scripts/app_note/make-plots-hlamajority-wgs-appnote.R
 fi
