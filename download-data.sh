@@ -1,8 +1,8 @@
-#mkdir -p data/raw
+mkdir -p data/raw
 # check if the file already exists and has the correct md5 checksum
 if [ -f data/raw/hlamajority-appnote-data-raw.tar.gz ]; then
     echo "File already exists. Checking integrity..."
-    if echo "22ab3109a1b0b4afb290395387169c39 data/raw/hlamajority-appnote-data-raw.tar.gz" | md5sum -c -; then
+    if echo "3e310bb0ef9e42d0c510766d6bdba19c data/raw/hlamajority-appnote-data-raw.tar.gz" | md5sum -c -; then
 	echo "File is valid. Skipping download - checking if it has been extracted..."
         if [ -d data/raw/cell-lines-before-polysolver-change ]; then 
             echo "Data has been extracted, skipping data extraction"
@@ -23,7 +23,7 @@ else
     echo "File does not exist. Downloading..."
     wget -O data/raw/hlamajority-appnote-data-raw.tar.gz https://zenodo.org/records/21653014/files/hlamajority-appnote-data-raw.tar.gz?download=1
     echo "Checking integrity of the downloaded file..."
-    if echo "22ab3109a1b0b4afb290395387169c39 data/raw/hlamajority-appnote-data-raw.tar.gz" | md5sum -c -; then
+    if echo "3e310bb0ef9e42d0c510766d6bdba19c data/raw/hlamajority-appnote-data-raw.tar.gz" | md5sum -c -; then
         echo "File is valid."
         tar -xvf data/raw/hlamajority-appnote-data-raw.tar.gz -C data/raw/
         mv data/raw/raw/* data/raw/
