@@ -13,25 +13,19 @@ To regenerate the figures from the submitted version of the paper (submitted 01/
 Clone the repository specifying the branch
 
 ```
-git clone --recurse-submodules --branch v1.0.0 https://github.com/kevinpryan/hlamajority-appnote.git
+git clone --recurse-submodules https://github.com/kevinpryan/hlamajority-appnote.git
 ```
 
-Run `run-all.sh` to download the nf-hlamajority output data from Zenodo (2.2 GB) and run the downstream processing requried to generate figures
+Run `bash download-data.sh` to download the nf-hlamajority output data from Zenodo (2.4 GB)
 
-All Rscripts are run through a Docker image - Docker is required to run this.
+Run `bash run-all-app-note-thesis.sh` to run the downstream processing and generate the figures from the app note and the thesis chapter
 
-```
-bash run-all.sh
-```
+Requirements:
 
-Now generate figures
+- docker
+- nextflow
 
-```
-bash make-app-note-figures.sh
-```
-
-You will find Figures 1D,E combined at `results/app_note/plots/hlamajority-1000genomes-nci-combined-20260529.svg`
-
+You will find app note Figures 1D,E combined at `results/app_note/plots/hlamajority-1000genomes-nci-combined-20260529.svg`, and the supplementary figure at `results/app_note/plots/hlamajority-1000genomes-wgs.svg`.
 
 Run the Docker images containing all dependencies to run Rscripts as follows:
 
@@ -40,5 +34,3 @@ bash launch-container.sh
 ```
 
 and go to `http://localhost:8787/` on any web browser to open Rstudio, open the directory `/hlamajority-paper/`
-
-TODO: clean up old versions of figures and plots
