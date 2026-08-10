@@ -204,3 +204,7 @@ echo "running script for making app note supplementary plot: make-plots-hlamajor
 $docker_prefix Rscript scripts/app_note/make-plots-hlamajority-wgs-appnote.R
 fi
 
+if [ ! -f results/thesis/plots/hlamajority-1000genomes-wgs-two-col.pdf ]; then
+echo "running script for making thesis WGS plot: make-plots-hlamajority-wgs-thesis.R"
+$docker_prefix Rscript scripts/thesis/make-plots-hlamajority-wgs-thesis.R
+fi
