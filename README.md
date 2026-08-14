@@ -13,7 +13,7 @@ To regenerate the figures from the submitted version of the paper (submitted 01/
 Clone the repository specifying the branch
 
 ```
-git clone --recurse-submodules https://github.com/kevinpryan/hlamajority-appnote.git
+git clone --recurse-submodules --branch v1.2.0 https://github.com/kevinpryan/hlamajority-appnote.git
 ```
 
 Run `bash download-data.sh` to download the nf-hlamajority output data from Zenodo (2.4 GB)
