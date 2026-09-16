@@ -105,5 +105,5 @@ figure <- ggplot(df.for.plotting, aes(x = Tool, y = Accuracy, fill = Tool)) +
 
 figure
 
-ggsave(plot = figure, filename = "/hlamajority-paper/results/app_note/plots/hlamajority-1000genomes-wgs-20260915.svg", width = 20, height = 7)
-ggsave(plot = figure, filename = "/hlamajority-paper/results/app_note/plots/hlamajority-1000genomes-wgs-20260915.pdf", width = 10, height = 15)
+ggsave(plot = figure, filename = "/hlamajority-paper/results/app_note/plots/hlamajority-1000genomes-wgs-20260915.svg", width = 10, height = 15)
+ggsave(plot = figure, filename = "/hlamajority-paper/results/app_note/plots/hlamajority-1000genomes-wgs-20260915.pdf", width = 15, height = 15)

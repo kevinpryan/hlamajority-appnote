@@ -133,9 +133,11 @@ $docker_prefix Rscript scripts/app_note/parse-nextflow-execution-trace-appnote-2
 echo "running script for selecting samples for WGS benchmark"
 $docker_prefix Rscript scripts/app_note/identify-failed-samples-wes-decide-wgs-samples.R
 
+if [ ! -f data/processed/1000-genomes/wgs-30x-149samples-majority/1000-genomes-30x-wgs-full-stats-hlamajority-majority-vote.csv ]; then
 echo "running script for evaluating WGS benchmark results: evaluate_predictions_1000genomes_wgs.R"
 mkdir -p  data/processed/1000-genomes/wgs-30x-149samples-majority/
 $docker_prefix Rscript external/mhc_genotyping/scripts/evaluate_predictions_1000genomes_wgs.R
+fi
 
 ####
 #   EVALUTATE RESULTS CELL LINES LENS
@@ -184,10 +186,12 @@ mkdir -p data/processed/neoantigen-prediction/
 $docker_prefix Rscript scripts/thesis/prep-experiment-data-for-nextflow-include-optitype-rna.R
 fi
 
+if [ ! -f scripts/thesis/nf-neoantigen/results/combined/combined_stats_out.csv ]; then
 echo "running nf-neoantigen"
 cd scripts/thesis/nf-neoantigen/
-nextflow run main.nf -profile docker
+nextflow run main.nf -profile docker -resume
 cd ../../../
+fi
 
 if [ ! -f results/thesis/figures/neoantigen-prediction-errors-add-optitype-rna-20260604.pdf ]; then
 echo "running script for making neoantigen prediction error plots: make-plots-compare-optitype-rna-lens-hlamajority.R"
@@ -229,6 +233,7 @@ fi
 if [ ! -f ./data/processed/1000-genomes/majority/without_polysolver_v2/1000-genomes-full-stats-hlamajority-majority-vote-without-polysolver.csv ]; then
 echo "Running script: evaluate_predictions_1000genomes_all_samples_without_polysolver.R"
 $docker_prefix Rscript external/mhc_genotyping/scripts/evaluate_predictions_1000genomes_all_samples_without_polysolver.R
+echo "EXIT STATUS: $?"
 fi
 
 # 1000 genomes WGS
@@ -241,7 +246,7 @@ $docker_prefix Rscript scripts/nf-hlamajority-without-polysolver/parse_outputs_m
     --weights scripts/nf-hlamajority-without-polysolver/benchmarking_results_claeys_cleaned.csv
 fi
 
-if [ ! -f ./data/processed/1000-genomes/wgs-30x-149samples-majority/1000-genomes-30x-wgs-full-stats-hlamajority-majority-vote-without-polysolver.csv ]; then
+if [ ! -f data/processed/1000-genomes/wgs-30x-149samples-majority/without_polysolver/1000-genomes-30x-wgs-full-stats-hlamajority-majority-vote-without-polysolver.csv ]; then
 echo "Running script: evaluate_predictions_1000genomes_wgs_without_polysolver.R"
 $docker_prefix Rscript external/mhc_genotyping/scripts/evaluate_predictions_1000genomes_wgs_without_polysolver.R
 fi
@@ -256,7 +261,7 @@ $docker_prefix Rscript scripts/nf-hlamajority-without-polysolver/parse_outputs_m
     --weights scripts/nf-hlamajority-without-polysolver/benchmarking_results_claeys_cleaned.csv
 fi
 
-if [ ! -f data/processed/cell-lines-after-polysolver-change/majority/nci-full-stats-hlamajority-majority-vote-without-polysolver.csv ]; then
+if [ ! -f data/processed/cell-lines-after-polysolver-change/majority/without_polysolver/nci-full-stats-hlamajority-majority-vote-without-polysolver.csv ]; then
 echo "Running script: evaluate_predictions_nci60_after_polysolver_change_without_polysolver.R"
 $docker_prefix Rscript external/mhc_genotyping/scripts/evaluate_predictions_nci60_after_polysolver_change_without_polysolver.R
 fi
