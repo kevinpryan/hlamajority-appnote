@@ -135,19 +135,6 @@ process PUBLISH_STATS_COMBINED {
     """
 }
 
-
-
-/*
-parse-outputs-netmhcpan.R \\
-        "!{scenario.Sample}" \\
-        "!{scenario.HLA_Gene}" \\
-        "!{gene}" \\
-        "!{mutation}" \\
-        !{prediction_files} \\
-        "!{scenarios_file}" \\
-        "!{peptides_file}"
-*/
-
 /*
  * ========================================================================================
  *  Workflow Definition
@@ -158,8 +145,6 @@ workflow {
 
     // --- 1. Create initial channels ---
 
-    // Channel of mutations: [ gene, mutation ]
-//         .fromPath("../../../data/processed/neoantigen-prediction/mutations.csv")
     ch_mutations = Channel
         .fromPath("../../../data/processed/neoantigen-prediction/mutations-without-nras-q61h.csv")
         .splitCsv(header:true)
@@ -168,7 +153,7 @@ workflow {
         .fromPath("../../../data/processed/neoantigen-prediction/scenarios-include-optitype-rna.txt")
         .splitCsv(header:true, sep:"\t")
         .set{ ch_scenarios }
-    ch_scenarios.view()
+    //ch_scenarios.view()
     // --- 2. Generate peptide sequences for each mutation ---
     
     // This process runs once for each item in ch_mutations
@@ -224,7 +209,7 @@ workflow {
  
     // We also need to pass the original scenarios.txt file as a static value input
     scenarios_file = file("../../../data/processed/neoantigen-prediction/scenarios-include-optitype-rna.txt")
-    ch_for_combine.view() 
+    //ch_for_combine.view() 
     
     COMBINE_RESULTS(ch_for_combine, scenarios_file)
    
